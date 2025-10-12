@@ -31,6 +31,7 @@ class FileSystemTerminal(QWidget):
         # Стартовый текст
         self.print_line("💻 Файловый терминал")
         self.print_line(f"📦 Корневая директория: {self.root_path}")
+        self.print_available_com()
         self.show_dir_info()
 
     # -------------------------------------------------------
@@ -75,23 +76,20 @@ class FileSystemTerminal(QWidget):
                     self.print_line("❌ Использование: имя <старое> <новое>")
                     return
                 old_name = os.path.join(self.current_path, parts[1])
-                new_name = os.path.join(self.current_path, parts[2])
+                new_name_full = ' '.join(parts[2:])
+                new_name = os.path.join(self.current_path, new_name_full)
                 if not os.path.exists(old_name):
                     self.print_line("❌ Файл или папка не существует.")
                     return
                 os.rename(old_name, new_name)
-                self.print_line(f"✅ Переименовано: {parts[1]} → {parts[2]}")
+                self.print_line(f"✅ Переименовано: {parts[1]} → {new_name_full}")
 
             elif cmd == "инфо":
                 self.show_dir_info()
 
             else:
-                self.print_line("❌ Неизвестная команда. Доступные команды:")
-                self.print_line("  Нд — подняться на уровень вверх")
-                self.print_line("  Вд <папка> — перейти в подпапку")
-                self.print_line("  имя <старое> <новое> — переименовать файл/папку")
-                self.print_line("  Инфо — показать содержимое текущей папки")
-                self.print_line("  выход — закрыть программу")
+                self.print_line("❌ Неизвестная команда.")
+                self.print_available_com()
 
         except Exception as e:
             self.print_line(f"⚠️ Ошибка: {e}")
@@ -125,6 +123,13 @@ class FileSystemTerminal(QWidget):
         self.output.append(text)
         self.output.verticalScrollBar().setValue(self.output.verticalScrollBar().maximum())
 
+    def print_available_com(self):
+        self.print_line("Доступные команды:")
+        self.print_line("  Нд — подняться на уровень вверх")
+        self.print_line("  Вд <папка> — перейти в подпапку")
+        self.print_line("  имя <старое> <новое> — переименовать файл/папку")
+        self.print_line("  Инфо — показать содержимое текущей папки")
+        self.print_line("  выход — закрыть программу")
 
 # -------------------------------------------------------
 if __name__ == "__main__":
